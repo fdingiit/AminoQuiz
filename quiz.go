@@ -44,13 +44,10 @@ func IPConvert(ip string) (uint32, error) {
 			num = num*10 + int(r-'0')
 		}
 
-		if r == ' ' {
-			// if we get a space, but not dot found yet,
+		if r == ' ' && !dotSeen {
+			// if we get a space, but no dot found yet,
 			// then we are in finding dot mode
-			if !dotSeen {
-				needDot = true
-			}
-			continue
+			needDot = true
 		}
 
 		if r == '.' {
