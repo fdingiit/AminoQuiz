@@ -71,20 +71,11 @@ func IPConvert(ip string) (uint32, error) {
 		}
 	}
 
-	// tailing spaces
-	if needDot {
+	// tailing spaces/enough numbers/valid number
+	if needDot || dotCounter != dotTotalNum || !(num >= ipNumMin && num <= ipNumMax) {
 		return 0, ErrInvalidIPInput
 	}
 
-	// enough numbers
-	if dotCounter != dotTotalNum {
-		return 0, ErrInvalidIPInput
-	}
-
-	// last number to add
-	if !(num >= ipNumMin && num <= ipNumMax) {
-		return 0, ErrInvalidIPInput
-	}
 	nums[dotCounter] = num
 
 	return uint32(nums[0]<<24 + nums[1]<<16 + nums[2]<<8 + nums[3]), nil
