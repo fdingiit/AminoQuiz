@@ -8,16 +8,12 @@ var (
 
 const (
 	dotTotalNum = 3
+
+	ipNumMin = 0
+	ipNumMax = 255
 )
 
-func isValidIPNum(num int) bool {
-	if num >= 0 && num <= 255 {
-		return true
-	}
-	return false
-}
-
-func IpConvert(ip string) (uint32, error) {
+func IPConvert(ip string) (uint32, error) {
 	var (
 		nums       [4]int
 		dotSeen    bool
@@ -66,7 +62,7 @@ func IpConvert(ip string) (uint32, error) {
 			}
 
 			// every time we get a dot, check if there is a valid number
-			if num == -1 || !isValidIPNum(num) {
+			if !(num >= ipNumMin && num <= ipNumMax) {
 				return 0, ErrInvalidIPInput
 			}
 
@@ -89,7 +85,7 @@ func IpConvert(ip string) (uint32, error) {
 	}
 
 	// last number to add
-	if num == -1 || !isValidIPNum(num) {
+	if !(num >= ipNumMin && num <= ipNumMax) {
 		return 0, ErrInvalidIPInput
 	}
 	nums[dotCounter] = num

@@ -25,7 +25,7 @@ func TestConvertSimple(t *testing.T) {
 	}
 
 	for i, c := range cases {
-		got, err := IpConvert(c)
+		got, err := IPConvert(c)
 		fmt.Printf("case: %s, wanted: %d, got: %d\n", c, wanted[i], got)
 		if !assert.Nil(t, err) || !assert.Equal(t, wanted[i], got) {
 			t.FailNow()
@@ -51,7 +51,7 @@ func TestConvertSpacesValid(t *testing.T) {
 	}
 
 	for i, c := range cases {
-		got, err := IpConvert(c)
+		got, err := IPConvert(c)
 		fmt.Printf("case: %s, wanted: %d, got: %d\n", c, wanted[i], got)
 		if !assert.Nil(t, err) || !assert.Equal(t, wanted[i], got) {
 			t.FailNow()
@@ -67,7 +67,7 @@ func TestConvertSpacesInValid(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		got, err := IpConvert(c)
+		got, err := IPConvert(c)
 		fmt.Printf("case: [%s], wanted a err, got: [%d, %v]\n", c, got, err)
 		if !assert.NotNil(t, err) {
 			t.FailNow()
@@ -91,7 +91,7 @@ func TestConvertInputInValid(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		got, err := IpConvert(c)
+		got, err := IPConvert(c)
 		fmt.Printf("case: [%s], wanted a err, got: [%d, %v]\n", c, got, err)
 		if !assert.NotNil(t, err) {
 			t.FailNow()
