@@ -7,40 +7,8 @@ var (
 )
 
 const (
-	dotNum = 3
+	dotTotalNum = 3
 )
-
-func calc(nums []int) uint32 {
-	return uint32(nums[0]<<24 + nums[1]<<16 + nums[2]<<8 + nums[3])
-}
-
-func isAllowed(r uint8) bool {
-	if (r >= '0' && r <= '9') || r == ' ' || r == '.' {
-		return true
-	}
-	return false
-}
-
-func isDot(r uint8) bool {
-	if r == '.' {
-		return true
-	}
-	return false
-}
-
-func isSpace(r uint8) bool {
-	if r == ' ' {
-		return true
-	}
-	return false
-}
-
-func isNum(r uint8) bool {
-	if r >= '0' && r <= '9' {
-		return true
-	}
-	return false
-}
 
 func isValidIPNum(num int) bool {
 	if num >= 0 && num <= 255 {
@@ -51,20 +19,21 @@ func isValidIPNum(num int) bool {
 
 func IpConvert(ip string) (uint32, error) {
 	var (
-		nums       []int
-		num        int = -1
+		nums       [4]int
 		dotSeen    bool
 		needDot    bool
 		dotCounter int
+
+		num = -1 // if -1, means no number fetched from ip string of current round
 	)
 
-	for i := 0; i < len(ip); i++ {
+	for _, r := range ip {
 		// reject any shit except number, space, dot
-		if !isAllowed(ip[i]) {
+		if !((r >= '0' && r <= '9') || r == ' ' || r == '.') {
 			return 0, ErrInvalidIPInput
 		}
 
-		if isNum(ip[i]) {
+		if r >= '0' && r <= '9' {
 			if needDot {
 				return 0, ErrInvalidIPInput
 			}
@@ -76,10 +45,10 @@ func IpConvert(ip string) (uint32, error) {
 			if num == -1 {
 				num = 0
 			}
-			num = num*10 + int(ip[i]-'0')
+			num = num*10 + int(r-'0')
 		}
 
-		if isSpace(ip[i]) {
+		if r == ' ' {
 			// if we get a space, but not dot found yet,
 			// then we are in finding dot mode
 			if !dotSeen {
@@ -88,9 +57,11 @@ func IpConvert(ip string) (uint32, error) {
 			continue
 		}
 
-		if isDot(ip[i]) {
+		if r == '.' {
 			dotCounter++
-			if dotCounter > dotNum {
+
+			// too many dots
+			if dotCounter > dotTotalNum {
 				return 0, ErrInvalidIPInput
 			}
 
@@ -100,7 +71,7 @@ func IpConvert(ip string) (uint32, error) {
 			}
 
 			// hala IP number
-			nums = append(nums, num)
+			nums[dotCounter-1] = num
 			num = -1 // refresh this round of finding number
 			needDot = false
 			dotSeen = true
@@ -113,7 +84,7 @@ func IpConvert(ip string) (uint32, error) {
 	}
 
 	// enough numbers
-	if dotCounter != dotNum {
+	if dotCounter != dotTotalNum {
 		return 0, ErrInvalidIPInput
 	}
 
@@ -121,7 +92,7 @@ func IpConvert(ip string) (uint32, error) {
 	if num == -1 || !isValidIPNum(num) {
 		return 0, ErrInvalidIPInput
 	}
-	nums = append(nums, num)
+	nums[dotCounter] = num
 
-	return calc(nums), nil
+	return uint32(nums[0]<<24 + nums[1]<<16 + nums[2]<<8 + nums[3]), nil
 }
