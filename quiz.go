@@ -42,6 +42,11 @@ func IPConvert(ip string) (uint32, error) {
 				num = 0
 			}
 			num = num*10 + int(r-'0')
+
+			// failed ASAP
+			if !(num >= ipNumMin && num <= ipNumMax) {
+				return 0, ErrInvalidIPInput
+			}
 		}
 
 		if r == ' ' && !dotSeen {
